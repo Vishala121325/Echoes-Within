@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Spectral&display=swap');
+
+body {
+    background: linear-gradient(to bottom, #e9f5e1 0%, #d7e8c9 100%), url('/static/forest_bg.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #3e2f22;
+    font-family: 'EB Garamond', serif;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Style for the sparkle effect */
+@keyframes sparkle {
+    0% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0; transform: scale(0.5); }
+}
+
+.sparkle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background-color: white;
+    border-radius: 50%;
+    opacity: 0;
+    animation: sparkle 1.5s ease-out infinite;
+}
+
+.sparkle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Opening Screen */
+#opening-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: #f6f1e7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 9999;
+    animation: fadeOutScreen 1s ease forwards;
+    animation-delay: 2s; /* Disappear after 2 seconds */
+}
+
+.app-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 6rem;
+    color: #3e2f22;
+    text-shadow: 4px 4px 10px #dcd0c0;
+    opacity: 0;
+    animation: fadeInTitle 2s ease forwards;
+    letter-spacing: 4px;
+    transform: scale(1.05);
+    text-align: center;
+}
+
+/* Title fade-in */
+@keyframes fadeInTitle {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+/* Leaf Animation */
+@keyframes floatLeaves {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    100% {
+        transform: translateY(-100vh) rotate(360deg);
+    }
+}
+
+#leaves-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Main content */
+.capsule-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 80px 20px 20px; /* Top padding increased to make space for fixed title */
+}
+
+.capsule-card {
+    background-color: #fff8e7;
+    border: 2px solid #b7a382;
+    padding: 20px;
+    margin: 15px;
+    width: 280px;
+    min-height: 250px;
+    border-radius: 12px;
+    box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+    text-align: center;
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.capsule-card:hover {
+    transform: translateY(-5px);
+}
+
+.locked {
+    opacity: 0.7;
+}
+
+.open {
+    background-color: #faf3e0;
+}
+
+/* Button styling */
+button, .open-btn, .delete-button {
+    background-color: #e0c097;
+    border: 2px solid #a68a64;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-family: 'EB Garamond', serif;
+    font-size: 1.2rem;
+    margin: 10px 5px;
+    cursor: pointer;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+}
+
+button:hover, .open-btn:hover, .delete-button:hover {
+    background-color: #d1b68a;
+}
+
+/* Input fields */
+textarea, input[type="file"], input[type="datetime-local"] {
+    width: 90%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #b7a382;
+    border-radius: 6px;
+    background-color: #fff8e7;
+    font-family: 'Spectral', serif;
+    font-size: 1rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Unlock fade + glow */
+@keyframes fadeInUnlock {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+        box-shadow: 0 0 0px rgba(255, 215, 150, 0);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 20px rgba(255, 215, 150, 0.8);
+    }
+}
+.download-all-btn {
+    background-color: #3b7f60;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.download-all-btn:hover {
+    background-color: #2a5c46;
+}
+
+.fade-unlock {
+    animation: fadeInUnlock 0.8s ease forwards;
+}

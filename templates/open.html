@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Open Capsule - Echoes Within</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .fixed-title {
+            font-size: 0.7cm; /* Increased size as you requested */
+        }
+
+        .capsule-content {
+            color: #2c2c2c; /* Dark text */
+            background-color: rgba(255, 255, 255, 0.9); /* Light background if needed */
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+        }
+
+        .media-box {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+            position: relative;
+            background: #fdfcf9;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .media-item {
+            width: 100%;
+            max-height: 350px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .download-link {
+            display: inline-block;
+            margin-top: 6px;
+            color: #3b7f60;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .download-link:hover {
+            text-decoration: underline;
+        }
+
+        .audio-container {
+            width: 100%;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+        }
+
+        /* Slideshow styles */
+        .slideshow-container {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            display: block;
+            text-align: center;
+        }
+
+        .slides {
+            display: none;
+            width: 100%;
+            max-height: 350px;
+            transition: transform 0.5s ease; /* Smooth transition */
+        }
+
+        .active-slide {
+            display: block;
+        }
+
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            padding: 16px;
+            margin-top: -22px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.3s ease;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+        }
+
+        .next {
+            right: 0;
+        }
+
+        .prev {
+            left: 0;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fixed Title -->
+    <div class="fixed-title">Echoes Within</div>
+    <!-- Forest Background -->
+    <div class="forest-background"></div>
+
+    <!-- Capsule Display -->
+    <div class="capsule-open-page">
+        <h1>📝 Your Memory</h1>
+        <div class="capsule-content">
+            <p><strong>Planted On:</strong> {{ capsule.plantDate | datetimeformat }}</p>
+
+            <a href="{{ url_for('download_all', capsule_id=capsule.id) }}">
+                <button class="download-all-btn">📥 Download All</button>
+            </a>
+
+            {% if capsule.message %}
+                <p><strong>Memory:</strong></p>
+                <p>{{ capsule.message }}</p>
+            {% endif %}
+
+            <!-- Slideshow for Photos -->
+            {% if capsule.photos %}
+                <p><strong>Photos:</strong></p>
+                <div class="slideshow-container">
+                    {% for photo in capsule.photos %}
+                        <div class="slides">
+                            <img src="{{ url_for('uploaded_file', filename=photo) }}" class="media-item" alt="Memory Image">
+                        </div>
+                    {% endfor %}
+                    <!-- Navigation arrows -->
+                    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                </div>
+            {% endif %}
+
+            <!-- Videos -->
+            {% if capsule.videos %}
+                <p><strong>Videos:</strong></p>
+                <div class="media-gallery">
+                    {% for video in capsule.videos %}
+                        <div class="media-box">
+                            <video controls class="media-item">
+                                <source src="{{ url_for('uploaded_file', filename=video) }}" type="video/mp4">
+                            </video>
+                            <a href="{{ url_for('uploaded_file', filename=video) }}" download class="download-link">📥 Download Video</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Displaying Multiple Audio Clips -->
+            {% if capsule.audios %}
+                <p><strong>Audio Clips:</strong></p>
+                {% for audio in capsule.audios %}
+                    <div class="media-box">
+                        <audio controls>
+                            <source src="{{ url_for('uploaded_file', filename=audio) }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <a href="{{ url_for('uploaded_file', filename=audio) }}" download class="download-link">Download Audio</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <br>
+    <a href="/"><button class="open-btn">🌿 Back to Capsules</button></a>
+
+    <!-- Floating Leaves Container -->
+    <div id="leaves-container"></div>
+
+    <script>
+        // Slideshow functionality
+        let slideIndex = 0;
+
+        function showSlides() {
+            let slides = document.getElementsByClassName("slides");
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove("active-slide");
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) { slideIndex = 1 }
+            slides[slideIndex - 1].classList.add("active-slide");
+        }
+
+        function plusSlides(n) {
+            let slides = document.getElementsByClassName("slides");
+            slideIndex += n;
+            if (slideIndex > slides.length) { slideIndex = 1; }
+            if (slideIndex < 1) { slideIndex = slides.length; }
+            showSlides();
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            showSlides(); // Start the slideshow on page load
+        });
+
+        // Floating Leaves Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('leaves-container');
+            for (let i = 0; i < 15; i++) { 
+                const leaf = document.createElement('div');
+                leaf.classList.add('leaf');
+                leaf.style.left = Math.random() * 100 + "vw";
+                leaf.style.animationDelay = Math.random() * 5 + "s";
+                leaf.style.animationDuration = 12 + Math.random() * 8 + "s";
+                container.appendChild(leaf);
+            }
+        });
+    </script>
+</body>
+</html>

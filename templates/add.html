@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Capsule</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* Extra cozy vintage styles */
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .preview-item {
+            border: 1px dashed #a67c52;
+            background: #f7f2e8;
+            margin: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            width: 150px;
+            text-align: center;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        .preview-item img, .preview-item video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>➕ Create a New Capsule</h1>
+
+    <form action="/save_capsule" method="POST" enctype="multipart/form-data">
+        
+        <!-- Capsule Name -->
+        <label for="capsuleName">Capsule Name</label><br>
+        <input type="text" id="capsuleName" name="name" placeholder="Enter a name for your capsule" required><br>
+
+        <textarea name="message" placeholder="Write your message..." rows="5" required></textarea><br>
+
+        <label>Upload Photos (Only images. Multiple allowed, select at once)</label><br>
+        <input type="file" id="photoInput" name="photos[]" accept="image/*" multiple><br>
+        <div id="photoPreview" class="preview-container"></div>
+
+        <label>Upload Videos (Only videos. Multiple allowed, select at once)</label><br>
+        <input type="file" id="videoInput" name="videos[]" accept="video/*" multiple><br>
+        <div id="videoPreview" class="preview-container"></div>
+
+        <label>Upload Audio (Only audio. Multiple allowed, select at once)</label><br>
+        <input type="file" id="audioInput" name="audios[]" accept="audio/*" multiple><br>
+        <div id="audioPreview" class="preview-container"></div>
+
+        <label>Unlock Date</label><br>
+        <input type="datetime-local" name="unlockDate" required><br>
+
+        <button type="submit">📦 Save Capsule</button>
+    </form>
+</form>
+    <script>
+        const photoInput = document.getElementById('photoInput');
+        const videoInput = document.getElementById('videoInput');
+        const photoPreview = document.getElementById('photoPreview');
+        const videoPreview = document.getElementById('videoPreview');
+
+        // Handle photo preview
+        photoInput.addEventListener('change', function() {
+            photoPreview.innerHTML = ''; // Clear previous previews
+            Array.from(photoInput.files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.classList.add('preview-item');
+                        div.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                        photoPreview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        // Handle video preview
+        videoInput.addEventListener('change', function() {
+            videoPreview.innerHTML = ''; // Clear previous previews
+            Array.from(videoInput.files).forEach(file => {
+                if (file.type.startsWith('video/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.classList.add('preview-item');
+                        div.innerHTML = `<video src="${e.target.result}" controls></video>`;
+                        videoPreview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Echoes Within</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* Position floating elements behind the content */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1; /* Keep elements behind other content */
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            animation: sparkle 1.5s ease-out infinite;
+            opacity: 1;  /* Make sparkles more visible */
+        }
+
+        /* Sparkle animation */
+        @keyframes sparkle {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.5); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        /* Extra cozy vintage styles for previews */
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .preview-item {
+            border: 1px dashed #a67c52;
+            background: #f7f2e8;
+            margin: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            width: 150px;
+            text-align: center;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .preview-item img, .preview-item video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+        }
+        .fixed-title {
+            font-size: 0.7cm;
+        }        
+        
+    </style>
+</head>
+<body>
+
+    <div class="fixed-title">🍃Echoes Within</div>
+
+    <!-- Opening Screen -->
+    <div id="opening-screen">
+        <h1 class="app-title">Echoes Within</h1>
+        <p class="subtitle">a quiet place for your memories</p>
+    </div>
+
+    <!-- Forest Background -->
+    <div class="forest-background"></div>
+
+    <!-- Floating Elements (Only Sparkles now) -->
+    <div class="floating-elements" id="floating-elements-container">
+        <!-- Sparkles will be dynamically created by JavaScript -->
+    </div>
+
+    <h1>🌟 Your Memory Capsules</h1>
+    <a href="/add"><button class="add-btn">➕ Plant a New Memory</button></a>
+    
+    <div class="capsule-list">
+        {% for capsule in capsules %}
+            <div class="capsule-card {% if capsule.unlockDate > now %}locked{% else %}open{% endif %} fade-unlock">
+                <h2>{{ capsule.name }}</h2>  <!-- Display Capsule Name -->
+                {% if capsule.unlockDate > now %}
+                    <p>🔒 Locked Capsule</p>
+                    <p>Opens in: <span class="countdown" data-unlock="{{ capsule.unlockDate }}"></span></p>
+                {% else %}
+                    <p>🔓 Capsule Ready!</p>
+                    <a href="/open/{{ capsule.id }}"><button class="open-btn">Open Capsule</button></a>
+                {% endif %}
+                <form method="POST" action="{{ url_for('delete_capsule', capsule_id=capsule['id']) }}">
+                    <button type="submit" class="delete-button">🗑️ Delete</button>
+                </form> 
+            </div>
+        {% endfor %}
+    </div>    
+
+    <!-- Floating Sparkles -->
+    <div class="floating-elements">
+        <!-- These elements will be dynamically created by JavaScript -->
+    </div>
+
+    <script>
+        // Update countdowns for locked capsules
+        function updateCountdowns() {
+            const countdowns = document.querySelectorAll('.countdown');
+            countdowns.forEach(c => {
+                const unlockTime = new Date(c.dataset.unlock).getTime();
+                const now = new Date().getTime();
+                const distance = unlockTime - now;
+                if (distance < 0) {
+                    c.innerHTML = "Ready!";
+                } else {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    c.innerHTML = `${days}d ${hours}h ${minutes}m`;
+                }
+            });
+        }
+
+        setInterval(updateCountdowns, 60000);
+        updateCountdowns();
+
+        // Add floating sparkles on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('floating-elements-container');
+
+            // Create floating sparkles
+            for (let i = 0; i < 30; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                sparkle.style.left = Math.random() * 100 + "vw";  // Random horizontal position
+                sparkle.style.top = Math.random() * 100 + "vh";  // Random vertical position
+                sparkle.style.animationDelay = Math.random() * 3 + "s";  // Random delay
+                sparkle.style.animationDuration = 1.5 + Math.random() * 1 + "s";  // Random duration for sparkle animation
+                container.appendChild(sparkle);
+            }
+
+            // Fade out opening screen after 2 seconds
+            setTimeout(() => {
+                document.getElementById('opening-screen').style.opacity = 0;
+                setTimeout(() => {
+                    document.getElementById('opening-screen').style.display = 'none';
+                }, 1000);
+            }, 2000);
+        });
+    </script>
+
+</body>
+</html>
