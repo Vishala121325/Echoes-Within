@@ -1,4 +1,4 @@
-# 🌿 Echoes Within — A Time-Locked Memory Capsule App
+# 🌿 Echoes Within — A Time-Locked Memory Capsule Web App
 
 **Echoes Within** is a peaceful, visually enchanting web app that allows you to create and seal your emotions, thoughts, and moments into digital memory capsules — each time-locked until you're ready to open them.
 
